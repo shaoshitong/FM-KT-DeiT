@@ -53,24 +53,24 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=64,
+    batch_size=16,
     num_workers=5,
     dataset=dict(
         type=dataset_type,
-        data_root='data/imagenet',
-        ann_file='meta/train.txt',
+        data_root='/home/Bigdata/imagenet',
+        # ann_file='meta/train.txt',
         data_prefix='train',
         pipeline=train_pipeline),
     sampler=dict(type='DefaultSampler', shuffle=True),
 )
 
 val_dataloader = dict(
-    batch_size=64,
+    batch_size=16,
     num_workers=5,
     dataset=dict(
         type=dataset_type,
-        data_root='data/imagenet',
-        ann_file='meta/val.txt',
+        data_root='/home/Bigdata/imagenet',
+        # ann_file='meta/val.txt',
         data_prefix='val',
         pipeline=test_pipeline),
     sampler=dict(type='DefaultSampler', shuffle=False),

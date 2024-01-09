@@ -2,7 +2,7 @@ _base_ = [
     '../../deit/deit-tiny_pt-4xb256_in1k.py'
 ]
 # model settings
-find_unused_parameters = False
+find_unused_parameters = True
 
 # distillation settings
 use_logit = True
@@ -12,13 +12,14 @@ is_vit = True
 wsld = False
 dkd = False
 kd = False
-nkd = True
+nkd = False
 vitkd = True
+flowkd = True
 
 # method details
 model = dict(
     _delete_ = True,
-    type='ClassificationDistiller',
+    type='FMKTClassificationDistiller',
     use_logit = use_logit,
     is_vit = is_vit,
     teacher_pretrained = 'https://download.openmmlab.com/mmclassification/v0/deit3/deit3-small-p16_in21k-pre_3rdparty_in1k_20221009-dcd90827.pth',
@@ -63,12 +64,24 @@ model = dict(
                         ),
                     dict(methods=[dict(type='KDLoss',
                                        name='loss_kd',
-                                       use_this = kd,
+                                       use_this=kd,
                                        temp=1.0,
                                        alpha=0.5,
                                        )
-                                ]
-                        ),
-
-                   ]
+                                  ]
+                         ),
+                    dict(methods=[dict(type='FlowLoss',
+                                       name='loss_fmkd',
+                                       use_this=flowkd,
+                                       teacher_channel=1000,
+                                       student_channel=192,
+                                       loss_type="logit_based",
+                                       flow_loss_type="dist",
+                                       encoder_type="mlp",
+                                       number=2,
+                                       inference_sampling=8
+                                       )
+                                  ]
+                         ),
+                    ]
     )
